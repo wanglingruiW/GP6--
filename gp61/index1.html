@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>页面渲染</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        ul li {
+            list-style:none;
+        }
+        .wrap{
+            padding-left:50px;
+            Padding-top:30px;
+            width:1600px;
+            margin:0 auto;
+            height:auto;
+        }
+        .pic{
+            width:1440px;
+            height:auto;
+
+        }
+        li{
+            padding-right:20px;
+            width:360px;
+            height:600px;
+            float:left;
+        }
+        img{
+            width:340px;
+            height:420px;
+        }
+        button{
+            width:320px;
+            height:60px;
+            border:1px solid lightskyblue;
+            margin-left:10px
+        }
+        p{
+            font-size:20px;
+            margin-left:10px
+        }
+    </style>
+</head>
+<body>
+
+<div class = "wrap">
+    <!-- <ul class = "pic">
+        <li class = "picit">
+            <img src = "good2.jpg">
+            <button class= "Btn">
+                加入购物车
+            </button>
+            <p>这是标题</p>
+        </li>
+    </ul> -->
+</div>
+</body>
+<script src = "jquery-3.3.1.js"></script>
+<script src = "data.json"></script>
+<script>
+$(function(){
+    // console.log(1);//测试jquery是否可用
+    function WaterFall(url,main_selector){//简历构造函数，写入属性
+                        if(!url || !main_selector) return;
+                        this.url = url;//判定url是否存在
+                        this.main_ele = $(main_selector);
+                        this.init();
+                        console.log(this.url, main_selector)//测试 URL 和  容器是否正确
+                        
+            }
+            WaterFall.prototype = {//jian
+                constructor:WaterFall,
+                    init(){
+                        console.log(2);
+                        this.load_data()//调用函数下载数据，如果下载成功继续执行then
+                        .then(function(res){
+                            console.log(res.data.list);//测试下载数据的格式是否正确
+                            this.json = res.data.list;//赋值给json
+                            this.render_page();//调用渲染页面函数
+                        }.bind(this))//改变 指针指向
+                        .fail(function(def,type,err_msg){
+                            console.log(err_msg);
+                        })//如果失败的话返回失败信息；
+                    },
+                    load_data(){//功能一下载数据
+                        this.opt = {
+                            url:this.url,//地址参数
+                            type:"get",//用 get方法请求数据
+                            statusCode: {//如果失败，返回失败原因
+                                404: function() {
+                                    alert('page not found');
+                                },
+                                403: function() {
+                                    alert('无法访问该网址');
+                                }
+                            }
+                        };
+                        return $.ajax(this.opt)//调用ajax
+                    },
+                    render_page(){//功能二渲染页面
+                        this.html = "<ul>"//用+=拼接页面
+    
+                        console.log(this.json)//测试json是否传入
+                        // console.log(this.json)
+                        this.json.forEach(function(item){//便历json 中的数据
+                            // console.log(item);//测试json中的每个数据
+                        this.html += `<li class = "picit">
+                                            <img src = "${item.image}">
+                                            <button pro_id ="${item.userId}"class= "Btn">
+                                                加入购物车
+                                            </button>
+                                            <p>${item.title}</p>
+                                        </li>`
+                                //将json中的图片，名字和userID拼接到页面中
+                    }.bind(this))
+                    //  this.main_ele.html(this.html);
+                    this.html += "</ul>"
+                        // this.main_ele.html(this.html);
+                        // console.log(this.main_ele);
+                        this.main_ele.html(this.main_ele.html() + this.html);//将拼接的页面加入容器中
+                    }
+                }
+    new WaterFall("data.json",".wrap");//调用函数，并传入两个参数url 和 容器
+})
+</script>
+</html>
