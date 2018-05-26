@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>轮播图插件</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        ul li{
+            list-style: none;
+        }
+        .wrap{
+            margin: 0 auto;
+            width: 1146px;
+            position: relative;
+            box-shadow: 0 1px 3px rgba(167, 167, 167, 0.4);
+        }
+        .wrap:hover #prev{
+            left:0;
+        }
+        .wrap:hover #next{
+            right:0;
+        }
+        #pictures{
+        width: 1146px;
+        height: 400px;
+        border-bottom: none;
+        position: relative;
+        overflow: hidden;
+        }
+        .picture-list{
+         height:400px;   
+        width:6876px; 
+        display:block; 
+        position:absolute;
+        left:0;         
+        }
+        .list-item {
+            float: left;
+            height: 400px;
+            width: 1146px;
+            z-index: 2;
+            opacity: 1; 
+        }
+        img{
+            height: 400px;
+            width: 1146px;
+        }
+        #prev{
+
+        left: -33px;
+        border-radius: 3px;
+        position: absolute;
+        width: 33px;
+        height: 66px;
+        line-height: 66px;
+        font-size: 24px;
+        cursor: pointer;
+        top: 50%;
+        margin-top: -53px;
+        z-index: 2;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.2);   
+        }
+        #next{
+        right: -33px;
+        border-radius: 3px;
+        position: absolute;
+        width: 33px;
+        height: 66px;
+        line-height: 66px;
+        font-size: 24px;
+        cursor: pointer;
+        top: 50%;
+        margin-top: -53px;
+        z-index: 2;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.2);  
+        }
+        .fbc-trigger {
+        width: 500px;
+        height:30px;
+        margin:0 auto -150px;
+        text-align:center;
+        z-index:2;
+        }
+        .fbc-trigger li {
+            width:25px;
+            height:25px;
+            border-radius: 50%;
+            margin-left:60px;
+            background:lightblue;
+            float:left;
+        }
+  
+        </style>
+</head>
+<body>
+<div class = "wrap">
+    <div id="pictures">
+        <ul class="picture-list">
+            <li class="list-item" >
+                <img src="image1.jpg" class="pic_img">
+            </li>
+            <li class="list-item" >
+                <img src="image2.jpg" class="pic_img">
+            </li>
+            <li class="list-item" >
+                <img src="image3.jpg" class="pic_img">
+            </li>
+            <li class="list-item" >
+                <img src="image4.jpg" class="pic_img">
+            </li>
+            <li class="list-item" >
+                <img src="image5.jpg" class="pic_img">
+            </li>
+            <li class="list-item" >
+                <img src="image1.jpg" class="pic_img">
+            </li>
+        </ul>
+        <span class="btnleft" id="prev">
+            <i class="vipFont i-hv">&nbsp;&lt;&nbsp;</i>
+        </span>
+        <span class="btnright" id="next">
+            <i class="vipFont i-hv">&nbsp;&gt;&nbsp;</i>
+        </span>
+    </div>
+    </div>
+    <div class="fbc-trigger">
+    <ul class="fbc-trigger-con" id="J_btns">
+        <li class="">1</li>
+        <li class="select">2</li>
+        <li class="">3</li>
+        <li class="">4</li>
+        <li class="">5</li>
+    </ul>
+    </div>  
+</body>
+<script src = "jquery-3.3.1.js"></script>
+<script>
+        $(function() {
+        console.log(1);
+        // 把要操作的对象先获取到
+        var banner = $('.wrap');//轮播图的容器
+        var prevBtn = $('#prev'); // 左边按钮
+        var nextBtn = $('#next');//右边按钮
+        var Ul = $('.picture-list'); // 图片的ul
+        var Width = $('.list-item').width(); //获取第一张图片的宽度
+        var Point = $('#J_btns li'); // 获取按钮
+        var Index = 0; //计数器，记录了图片移动的张数
+    console.log(banner,Ul,Width,Point)
+        //点击小圆点让图片移动
+        $.each(Point, function(index, value) { //如果此处我没有用each循环来写，那么我便需要用$(this).index()方法来获取图片的下标
+        //让点击的小圆点有class样式，其他li没有class样式
+        Point.eq(index).on('click', function() {
+            $(this).addClass('now').siblings().removeClass('now');
+            Ul.stop().animate({
+                'left': -index * Width
+            });
+            Index = index;
+            console.log(Index);
+            //alert(Index);
+        })
+    });
+
+    
+        //	点击右箭头,ul往左跑
+        nextBtn.on('click', function() {
+            console.log(5);
+            //需要做一个判断，如果发现此时图片是最后一张图片，就不能继续执行了
+            //让index是图片的张数减一的时候,让index不继续加
+            if (Index >= 5) {
+                //让index变成0
+                Index = 0;
+                //              	让ul的left值瞬间变成0
+                Ul.css('left', 0);
+            }
+            Index++;
+            Ul.stop().animate({
+                'left': -Index * Width
+            });
+    
+            if (Index == 5) {
+                //因为在图片最后面添加了一张假图片，其实最后一张图片的时候，需要对应的是索引0的小圆点
+                Point.eq(0).addClass('now').siblings().removeClass('now');
+    
+            } else {
+                Point.eq(Index).addClass('now').siblings().removeClass('now');
+            }
+    
+        })
+    
+        //点击左箭头,让Ul往右跑
+        prevBtn.on('click', function() {
+            console.log(2);
+            if (Index <= 0) {
+                //return; 此时不应该return,应该让index变成最大的值，left也变成最大的left
+                Index = 5;
+                Ul.css('left', -Index * Width);
+            }
+            Index--;
+            Ul.stop().animate({
+                'left': -Index * Width
+            });
+    
+            if (Index == 5) {
+                //因为在图片最后面添加了一张假图片，其实最后一张图片的时候，需要对应的是索引0的小圆点
+                Point.eq(0).addClass('now').siblings().removeClass('now');
+            } else {
+                Point.eq(Index).addClass('now').siblings().removeClass('now');
+            }
+    
+        })
+    
+    
+    
+        //调取Right方法，使其自动播放
+        var time = setInterval(function() {
+            next.click();
+        }, 2000);
+    
+        //鼠标移到banner中,自动播放停止
+        banner.mouseenter(function() {
+            clearInterval(time);
+        });
+    
+        // 鼠标移出banner中,自动播放开始
+        banner.mouseleave(function() {
+            time = setInterval(function() {
+                next.click();
+            }, 2000);
+        })
+    })
+    </script>
+</html>
